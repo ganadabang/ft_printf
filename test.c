@@ -3,34 +3,58 @@
 /*                                                        :::      ::::::::   */
 /*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hyeonsok <hyeonsok@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 20:26:40 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/03 22:13:27 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/04 21:38:51 by hyeonsok         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 
+void	hello(char *x)
+{
+	x = "null";
+}
+
 int	main(void)
 {
-	int  res;
+	char	*x;
 
-	지정해둔 문자중 어느곳도 포함되지 않을때
-	알파벳을 만났는데 올바르게 움직이지 않을 때,,
-	width나 precision은 정상적으로 작동하는 것 처럼 보인다.
-	printf("%12      \n             a\n", 9);
-	printf("%12                   w\n", 9);
-	printf("%12                  l@k\n", 9);
-	printf("%12                   k\n", 9);
+	x = NULL;
 
-	printf("%12                   a\n", 9);
-	printf("%12ww\n", 9);
-	printf("%12                  l@k\n", 9);
-	printf("%12                   k\n", 9);
+	hello(x);
+	printf("%s",x);
+
+	대응하지 않는 경우는 어떻게되는거지
+	// 지정해둔 문자중 어느곳도 포함되지 않을때
+	// 알파벳을 만났는데 올바르게 움직이지 않을 때,,
+	// width나 precision은 정상적으로 작동하는 것 처럼 보인다.
+	// printf("%   -12      l    w\n", 9);
+	// printf("%12                   w\n", 9);
+	// printf("%12                  l@k\n", 9);
+	// printf("%12                   k\n", 9);
+	// int
+
+	// printf("%12                   a\n", 9);
+	// printf("%12ww\n", 9);
+	// printf("%12                  l@k\n", 9);
+	// printf("%12                   k\n", 9);
+
+	// printf("%000000     010s", "hi"); //width는 0이아닌 수로 시작할 것이니까 구분이 된다.
+	// printf("%0010s", "hi"); //width는 0이아닌 수로 시작할 것이니까 구분이 된다.
+	// printf("%010s", "hi");
+	// printf("%010s", "hi");
 
 	return (0);
+
 }
 
 // 유효하지 않은 플래그에 대해서는 스킵해서 생각한다.
 // 지정하지 않은 경
+// m1 이랑은 결과가 조금 다르게 나타나는 것으로 추측된당..
+// 그렇다면 어떻게 하는게 좋으려나
+// padding 때문에 이걸 하는 것 같기는 하다..
+
+//%0- -> -
+//%-0 -> -	이것들은 똑같이 움직인다. 
