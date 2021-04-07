@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/02 23:14:15 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/07 20:25:12 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/07 20:50:53 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,24 +220,24 @@ int readprecision(char *str, t_args *args)
 
 int	readargs(char *str, t_args **args)
 {
-	int		res;
+	char *	idx;
 	t_args	r_args;
 
-	res = 0;
+	idx = str;
 	initialize_args(&r_args);
-	while (*str != '\0' && !ft_istype(*str, &r_args))
+	while (*idx != '\0' && !ft_istype(*idx, &r_args))
 	{
 		if (r_args.has_flags == 0)
-			res += readflags(str, &r_args);
-		if (r_args.has_width == 0)
-			res += readwidth(str, &r_args);
-		if (r_args.has_precision == 0)
-			res += readprecision(str, &r_args);
-		str += res;
+			idx += readflags(idx, &r_args);
+		else if (r_args.has_width == 0)
+			idx += readwidth(idx, &r_args);
+		else if (r_args.has_precision == 0)
+			idx += readprecision(idx, &r_args);
+		else
+			idx++;
 	}
-
 	*args = &r_args;
-	return (res);
+	return (idx - str);
 }
 
 int ft_printf(const char * format, ...)
@@ -258,7 +258,7 @@ int ft_printf(const char * format, ...)
 			if (*itr == '%')
 			{
 				itr++;
-				itr += readargs(itr, &args);	
+				itr += readargs(itr, &args);
 				// res += ft_put_conv(ap, args);
 				continue;
 			}
@@ -291,8 +291,7 @@ int ft_printf(const char * format, ...)
 int	main(void)
 {
 	printf("test\n");
-	F("%010.5d");
-	F("%-011.7i");
+	F("%-011.7i");	//width랑 precision이랑 같이 사용될 때 작동하지 않아요..
 	F("%-20s");
 	F("%.5x");
 
