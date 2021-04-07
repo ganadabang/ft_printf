@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/02 23:14:15 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/07 22:07:01 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/07 23:22:56 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 #include <stdarg.h>
 #include <limits.h>
 #include <stdlib.h>
-#include <string.h>
 
-#define CONV "disuxX"
+#define CONV "cspdiuxX%"
 
 /*
 ** update libft
@@ -211,27 +210,58 @@ int readprecision(char *str, t_args *args)
 	return(res);
 }
 
-int	readargs(char *str, t_args **args)
+int	readargs(char *str, t_args *args)
 {
 	char *	idx;
-	t_args	*r_args;
+	// t_args	*r_args;
 
-	r_args = malloc(sizeof(t_args));
 	idx = str;
-	initialize_args(r_args);
-	while (*idx != '\0' && !ft_istype(*idx, r_args))
+	initialize_args(args);
+	while (*idx != '\0' && !ft_istype(*idx, args))
 	{
-		if (r_args->has_flags == 0)
-			idx += readflags(idx, r_args);
-		else if (r_args->has_width == 0)
-			idx += readwidth(idx, r_args);
-		else if (r_args->has_precision == 0)
-			idx += readprecision(idx, r_args);
+		if (args->has_flags == 0)
+			idx += readflags(idx, args);
+		else if (args->has_width == 0)
+			idx += readwidth(idx, args);
+		else if (args->has_precision == 0)
+			idx += readprecision(idx, args);
 		else
 			idx++;
 	}
-	*args = r_args;
 	return (idx - str);
+}
+int	ft_put_c(va_list *ap, t_args *args);
+int	ft_put_s(va_list *ap, t_args *args);
+int	ft_put_p(va_list *ap, t_args *args);
+int	ft_put_di(va_list *ap, t_args *args);
+int	ft_put_u(va_list *ap, t_args *args);
+int	ft_put_x(va_list *ap, t_args *args);
+int	ft_put_X(va_list *ap, t_args *args);
+
+int	ft_put_percent(va_list *ap, t_args *args)
+{
+	ft_putchar('%');
+}
+
+int	ft_put_conv(va_list *ap, t_args *args)
+{
+	if (args->type == 'c')
+		return (ft_put_c(ap, args));
+	if (args->type == 's')
+		return (ft_put_s(ap, args));
+	if (args->type == 'p')
+		return (ft_put_p(ap, args));
+	if (args->type == 'd' || args->type == 'i')
+		return (ft_put_di(ap, args));
+	if (args->type == 'u')
+		return (ft_put_u(ap, args));
+	if (args->type == 'x')
+		return (ft_put_x(ap, args));
+	if (args->type == 'X')
+		return (ft_put_X(ap, args));
+	if (args->type == '%')
+		return (ft_put_percent);
+	return (0);
 }
 
 int ft_printf(const char * format, ...)
@@ -243,7 +273,8 @@ int ft_printf(const char * format, ...)
 
 	itr = (char *)format;
 	if (!itr)
-		return (-1);
+		return (0);
+	args = (t_args *)malloc(sizeof(t_args));
 	va_start(ap, format);
 	{
 		res = 0;
@@ -252,27 +283,16 @@ int ft_printf(const char * format, ...)
 			if (*itr == '%')
 			{
 				itr++;
-				itr += readargs(itr, &args);
-
-				// res += ft_put_conv(ap, args);
+				itr += readargs(itr, args);
+				res += ft_put_conv(ap, args);
 				continue;
 			}
-			// res += ft_putchar(*itr);
+			res += ft_putchar(*itr);
 			itr++;
 		}
-		printf("args->type %c\n", (*args).type);
-
-		printf("args->flags %c\n", (*args).flags);
-		printf("args->has_flags %i\n", (*args).has_flags);
-
-		printf("args->width %i\n", (*args).width);
-		printf("args->has_width %i\n", (*args).has_width);
-
-		printf("args->precision %i\n", (*args).precision);
-		printf("args->has_precision %i\n\n", (*args).has_precision);
 	}
-	free(args);
 	va_end(ap);
+	free(args);
 	return (res);
 }
 
