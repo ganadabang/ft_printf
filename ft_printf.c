@@ -18,15 +18,12 @@
 
 #define CONV "cspdiuxX%"
 
-/*
-** update libft
-*/
-int ft_putchar(char c)
+int	ft_putchar(char c)
 {
 	return (write(1, &c, 1));
 }
 
-int ft_putstr(char *str)
+int	ft_putstr(char *str)
 {
 	int	res;
 
@@ -41,31 +38,26 @@ int ft_putstr(char *str)
 	return (res);
 }
 
-/*:
-**  update header
-**  %[parameter][flags][width][.precision][length]type
-*/
-
 void	*ft_memset(void *b, int c, size_t len)
 {
-	void *first_b;
+	void	*ptr;
 
-	first_b = b;
+	ptr = b;
 	while (len--)
 		*(unsigned char *)b++ = (unsigned char)c;
-	return (first_b);
+	return (ptr);
 }
 
-typedef struct	s_args
+typedef struct s_args
 {
 	int	has_flags;
 	int	flags;
-	int has_width;
-	int width;
-	int precision;
-	int has_precision;
-	int type;
-	int error;
+	int	has_width;
+	int	width;
+	int	precision;
+	int	has_precision;
+	int	type;
+	int	error;
 
 }				t_args;
 
@@ -122,7 +114,7 @@ void	initialize_args(t_args *args)
 
 int	ft_isflag(int c)
 {
-	return ( c == '0' || c == '-');
+	return ((c == '0') || (c == '-'));
 }
 
 int	readflags(char *str, t_args *args)
@@ -133,9 +125,9 @@ int	readflags(char *str, t_args *args)
 	while (ft_isflag(*str) || ft_isspace(*str))
 	{
 		if (*str == '-')
-			args->flags = '-'; //45
-		else if (*str == '0' && args->flags != '-')	//0과 -같이 사용될 수 없음
-				args->flags = '0'; //48
+			args->flags = '-';
+		else if (*str == '0' && args->flags != '-')
+			args->flags = '0';
 		str++;
 		res++;
 	}
@@ -146,9 +138,9 @@ int	readflags(char *str, t_args *args)
 	return (res);
 }
 
-int ft_istype(char c, t_args *args)	//1개 읽음
+int	ft_istype(char c, t_args *args)
 {
-	char *type;
+	char	*type;
 
 	type = ft_strchr(CONV, c);
 	if (type != NULL)
@@ -161,7 +153,7 @@ int ft_istype(char c, t_args *args)	//1개 읽음
 
 int	ft_getdigits(char *str)
 {
-	char *idx;
+	char	*idx;
 
 	idx = str;
 	if (*idx == '+' || *idx == '-')
@@ -171,10 +163,9 @@ int	ft_getdigits(char *str)
 	return (idx - str);
 }
 
-
 int	readwidth(char *str, t_args *args)
 {
-	int res;
+	int	res;
 
 	res = 0;
 	args->width = ft_atoi(str);
@@ -189,9 +180,9 @@ int	readwidth(char *str, t_args *args)
 	return (res);
 }
 
-int readprecision(char *str, t_args *args)
+int	readprecision(char *str, t_args *args)
 {
-	int res;
+	int	res;
 
 	res = 0;
 	if (*str == '.')
@@ -207,18 +198,22 @@ int readprecision(char *str, t_args *args)
 	}
 	else
 		args->has_precision = -1;
-	return(res);
+	return (res);
 }
 
 int	readargs(char *str, t_args *args)
 {
-	char *	idx;
-	// t_args	*r_args;
+	char	*idx;
 
 	idx = str;
 	initialize_args(args);
-	while (*idx != '\0' && !ft_istype(*idx, args))
+	while (*idx != '\0')
 	{
+		if (ft_istype(*idx, args))
+		{
+			idx++;
+			break;
+		}
 		if (args->has_flags == 0)
 			idx += readflags(idx, args);
 		else if (args->has_width == 0)
@@ -230,17 +225,32 @@ int	readargs(char *str, t_args *args)
 	}
 	return (idx - str);
 }
-int	ft_put_c(va_list *ap, t_args *args);
-int	ft_put_s(va_list *ap, t_args *args);
-int	ft_put_p(va_list *ap, t_args *args);
-int	ft_put_di(va_list *ap, t_args *args);
-int	ft_put_u(va_list *ap, t_args *args);
-int	ft_put_x(va_list *ap, t_args *args);
-int	ft_put_X(va_list *ap, t_args *args);
+int	ft_put_c(va_list *ap, t_args *args)
+{
+	int c;
+
+	c = va_arg(*ap, int);
+	return (ft_putchar(c));
+}
+
+// int	ft_put_s(va_list *ap, t_args *args)
+// {
+// 	size_t	len;
+
+// 	len = ft_putstr(*ap);
+
+// 	*ap += len + 1;
+// 	return(len);
+// }
+// int	ft_put_p(va_list ap, t_args *args);
+// int	ft_put_di(va_list ap, t_args *args);
+// int	ft_put_u(va_list ap, t_args *args);
+// int	ft_put_x(va_list ap, t_args *args);
+// int	ft_put_X(va_list ap, t_args *args);
 
 int	ft_put_percent(va_list *ap, t_args *args)
 {
-	ft_putchar('%');
+	return (ft_putchar('%'));
 }
 
 int	ft_put_conv(va_list *ap, t_args *args)
@@ -249,22 +259,22 @@ int	ft_put_conv(va_list *ap, t_args *args)
 		return (ft_put_c(ap, args));
 	if (args->type == 's')
 		return (ft_put_s(ap, args));
-	if (args->type == 'p')
-		return (ft_put_p(ap, args));
-	if (args->type == 'd' || args->type == 'i')
-		return (ft_put_di(ap, args));
-	if (args->type == 'u')
-		return (ft_put_u(ap, args));
-	if (args->type == 'x')
-		return (ft_put_x(ap, args));
-	if (args->type == 'X')
-		return (ft_put_X(ap, args));
+	// if (args->type == 'p')
+	// 	return (ft_put_p(ap, args));
+	// if (args->type == 'd' || args->type == 'i')
+	// 	return (ft_put_di(ap, args));
+	// if (args->type == 'u')
+	// 	return (ft_put_u(ap, args));
+	// if (args->type == 'x')
+	// 	return (ft_put_x(ap, args));
+	// if (args->type == 'X')
+	// 	return (ft_put_X(ap, args));
 	if (args->type == '%')
-		return (ft_put_percent);
+		return (ft_put_percent(ap, args));
 	return (0);
 }
 
-int ft_printf(const char * format, ...)
+int	ft_printf(const char *format, ...)
 {
 	char	*itr;
 	int		res;
@@ -273,46 +283,46 @@ int ft_printf(const char * format, ...)
 
 	itr = (char *)format;
 	if (!itr)
-		return (0);
+		itr = "(null)";
 	args = (t_args *)malloc(sizeof(t_args));
 	va_start(ap, format);
+	res = 0;
+	while (*itr)
 	{
-		res = 0;
-		while (*itr)
+		if (*itr == '%')
 		{
-			if (*itr == '%')
-			{
-				itr++;
-				itr += readargs(itr, args);
-				res += ft_put_conv(ap, args);
-				continue;
-			}
-			res += ft_putchar(*itr);
 			itr++;
+			itr += readargs(itr, args);
+			res += ft_put_conv(&ap, args);
+			continue ;
 		}
+		res += ft_putchar(*itr++);
 	}
 	va_end(ap);
 	free(args);
 	return (res);
 }
 
-// #ifdef TEST
+#ifdef TEST
 # define F(...) \
 	ft_printf(__VA_ARGS__)
-// #else
-// # include <stdio.h>
-// # define F(...) \
-// 	ft_printf(__VA_ARGS__)
-// #endif
-
+#else
+# include <stdio.h>
+# define F(...) \
+	printf(__VA_ARGS__)
+#endif
 
 int	main(void)
 {
-	printf("test\n");
-	F("%-011.7i");
-	F("%-20s");
-	F("%.5x");
-
+	printf("basic format test\n");
+	F("%c\n");
+	F("%s\n");
+	F("%p\n");
+	F("%d\n");
+	F("%i\n");
+	F("%u\n");
+	F("%x\n");
+	F("%X\n");
+	F("%%\n");
 	return (0);
-
 }
