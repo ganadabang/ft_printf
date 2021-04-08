@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/02 23:14:15 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/08 17:42:37 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/08 19:34:20 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,8 @@ typedef struct s_args
 	int	precision;
 	int	has_precision;
 	int	type;
-	int	error;
+	int	w_asterisk;
+	int	p_asterisk;
 
 }				t_args;
 
@@ -237,6 +238,12 @@ int	readflags(char *str, t_args *args)
 		str++;
 		res++;
 	}
+	if (*str == '*')
+	{
+		args->w_asterisk = 1;
+		args->has_width = 1;
+		res++;
+	}
 	if (args->flags > 0)
 		args->has_flags = 1;
 	else
@@ -296,7 +303,12 @@ int	readprecision(char *str, t_args *args)
 		args->has_precision = 1;
 		str++;
 	}
-	if (args->has_precision == 1)
+	if (*str == '*' || args->has_precision)
+	{
+		args->p_asterisk = 1;
+		res++;
+	}
+	else if (args->has_precision == 1)
 	{
 		args->precision = ft_atoi(str);
 		res += ft_getdigits(str);
@@ -315,22 +327,18 @@ int	readargs(char *str, t_args *args)
 	initialize_args(args);
 	while (*idx != '\0')
 	{
-		if (ft_istype(*idx, args))
-		{
-			idx++;
-			break;
-		}
 		if (args->has_flags == 0)
 			idx += readflags(idx, args);
 		else if (args->has_width == 0)
 			idx += readwidth(idx, args);
 		else if (args->has_precision == 0)
 			idx += readprecision(idx, args);
-		else
-			idx++;
+		else if (ft_istype(*idx++, args))
+			break;
 	}
 	return (idx - str);
 }
+
 int	ft_put_c(va_list *ap, t_args *args)
 {
 	int c;
@@ -402,6 +410,10 @@ int	ft_put_percent(va_list *ap, t_args *args)
 
 int	ft_put_conv(va_list *ap, t_args *args)
 {
+	if (args->w_asterisk)
+		args->width = va_arg(*ap, int);
+	if (args->p_asterisk)
+		args->precision = va_arg(*ap, int);
 	if (args->type == 'c')
 		return (ft_put_c(ap, args));
 	if (args->type == 's')
@@ -449,22 +461,22 @@ int	ft_printf(const char *format, ...)
 	free(args);
 	return (res);
 }
-
-#ifdef TEST
+// #define TEST
+// #ifndef TEST
 # define F(...) \
 	ft_printf(__VA_ARGS__)
-#else
-# include <stdio.h>
-# define F(...) \
-	printf(__VA_ARGS__)
-#endif
+// #else
+// # include <stdio.h>
+// # define F(...) \
+// 	printf(__VA_ARGS__)
+// #endif
 
 int	main(void)
 {
 	int num;
 
-	printf("basic format test\n");
-	F("%c\n" , 'A');
+	printf("==== basic format test ===\n");
+	F("%*.*c\n" ,9, 9, 'B');
 	F("%s\n", NULL);
 	F("%p\n" , &num);
 	F("%d\n", 2147483647);
