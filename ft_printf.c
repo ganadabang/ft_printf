@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/02 23:14:15 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/07 23:22:56 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/08 17:42:37 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,112 @@
 #include <stdlib.h>
 
 #define CONV "cspdiuxX%"
+#define OCT "01234567"
+#define DEC "0123456789"
+#define HEX "0123456789abcdef"
+#define CHEX "0123456789ABCDEF"
+
+void	*ft_calloc(size_t count, size_t size)
+{
+	void				*ptr;
+	void				*first_ptr;
+	unsigned long long	len;
+
+	len = size * count;
+	if (!(ptr = (void *)malloc(len)))
+		return (NULL);
+	first_ptr = ptr;
+	while (len--)
+		*(char *)ptr++ = '\0';
+	return (first_ptr);
+}
+
+static unsigned	int		conv_to_abs(int n)
+{
+	unsigned int	n_abs;
+
+	if (n < 0)
+		n_abs = n * -1;
+	else
+		n_abs = n;
+	return (n_abs);
+}
+
+static unsigned	int		get_len(unsigned int n)
+{
+	if (n >= 0 && n < 10)
+		return (1);
+	return (1 + get_len(n / 10));
+}
+
+size_t	ft_strlen(char *str)
+{
+	char *ptr;
+
+	ptr = str;
+	while (*str)
+		str++;
+	return (str - ptr);
+}
+
+static char				*conv_abs_to_str(char *str, unsigned int abs, char *set)
+{
+	size_t	len;
+
+	if (str == NULL)
+		return (NULL);
+	if (abs == 0)
+		return (str);
+	else
+	{
+		*(--str) = set[abs % ft_strlen(set)];
+	}
+	return (conv_abs_to_str(str, abs / ft_strlen(set), set));
+}
+
+char					*ft_itoa(int n)
+{
+	unsigned int	abs;
+	unsigned int	len;
+	char			is_minus;
+	char			*str;
+
+	abs = conv_to_abs(n);
+	len = get_len(abs);
+	is_minus = 0;
+	if (n < 0)
+		is_minus = 1;
+	str = ft_calloc(is_minus + len + 1, sizeof(char));
+	if (!str)
+		return (NULL);
+	if (abs == 0)
+	{
+		*str = '0';
+		return (str);
+	}
+	if (is_minus == 1)
+		*str = '-';
+	return (conv_abs_to_str(str + is_minus + len, abs, DEC) - is_minus);
+}
+
+char					*ft_utoa_base(int n, char *set)
+{
+	unsigned int	abs;
+	unsigned int	len;
+	char			*str;
+
+	abs = (unsigned int)n;
+	len = get_len(abs);
+	str = ft_calloc(len + 1, sizeof(char));
+	if (!str)
+		return (NULL);
+	if (abs == 0)
+	{
+		*str = '0';
+		return (str);
+	}
+	return (conv_abs_to_str(str + len, abs, set));
+}
 
 int	ft_putchar(char c)
 {
@@ -233,20 +339,61 @@ int	ft_put_c(va_list *ap, t_args *args)
 	return (ft_putchar(c));
 }
 
-// int	ft_put_s(va_list *ap, t_args *args)
-// {
-// 	size_t	len;
+int	ft_put_s(va_list *ap, t_args *args)
+{
+	char	*string;
+	size_t	len;
 
-// 	len = ft_putstr(*ap);
+	string = va_arg(*ap, char *);
+	if (!string)
+		string = "(null)";
+	return(ft_putstr(string));
+}
 
-// 	*ap += len + 1;
-// 	return(len);
-// }
-// int	ft_put_p(va_list ap, t_args *args);
-// int	ft_put_di(va_list ap, t_args *args);
-// int	ft_put_u(va_list ap, t_args *args);
-// int	ft_put_x(va_list ap, t_args *args);
-// int	ft_put_X(va_list ap, t_args *args);
+int	ft_put_p(va_list *ap, t_args *args)
+{
+	int		res;
+	size_t	addr;
+	char	*digits;
+
+	addr = (size_t)va_arg(*ap, void *);
+	digits = ft_utoa_base(addr, HEX);
+	res += ft_putstr("0x");
+	res += ft_putstr(digits);
+	return (res);
+}
+
+int	ft_put_di(va_list *ap, t_args *args)
+{
+	char	*digits;
+
+	digits = ft_itoa(va_arg(*ap, int));
+	return (ft_putstr(digits));
+}
+
+int	ft_put_u(va_list *ap, t_args *args)
+{
+	char	*digits;
+
+	digits = ft_utoa_base(va_arg(*ap, int), DEC);
+	return (ft_putstr(digits));
+}
+
+int	ft_put_x(va_list *ap, t_args *args)
+{
+	char	*digits;
+
+	digits = ft_utoa_base(va_arg(*ap, int), HEX);
+	return (ft_putstr(digits));
+}
+
+int	ft_put_X(va_list *ap, t_args *args)
+{
+	char	*digits;
+
+	digits = ft_utoa_base(va_arg(*ap, int), CHEX);
+	return (ft_putstr(digits));
+}
 
 int	ft_put_percent(va_list *ap, t_args *args)
 {
@@ -259,16 +406,16 @@ int	ft_put_conv(va_list *ap, t_args *args)
 		return (ft_put_c(ap, args));
 	if (args->type == 's')
 		return (ft_put_s(ap, args));
-	// if (args->type == 'p')
-	// 	return (ft_put_p(ap, args));
-	// if (args->type == 'd' || args->type == 'i')
-	// 	return (ft_put_di(ap, args));
-	// if (args->type == 'u')
-	// 	return (ft_put_u(ap, args));
-	// if (args->type == 'x')
-	// 	return (ft_put_x(ap, args));
-	// if (args->type == 'X')
-	// 	return (ft_put_X(ap, args));
+	if (args->type == 'p')
+		return (ft_put_p(ap, args));
+	if (args->type == 'd' || args->type == 'i')
+		return (ft_put_di(ap, args));
+	if (args->type == 'u')
+		return (ft_put_u(ap, args));
+	if (args->type == 'x')
+		return (ft_put_x(ap, args));
+	if (args->type == 'X')
+		return (ft_put_X(ap, args));
 	if (args->type == '%')
 		return (ft_put_percent(ap, args));
 	return (0);
@@ -283,7 +430,7 @@ int	ft_printf(const char *format, ...)
 
 	itr = (char *)format;
 	if (!itr)
-		itr = "(null)";
+		return (0);
 	args = (t_args *)malloc(sizeof(t_args));
 	va_start(ap, format);
 	res = 0;
@@ -314,15 +461,16 @@ int	ft_printf(const char *format, ...)
 
 int	main(void)
 {
+	int num;
+
 	printf("basic format test\n");
-	F("%c\n");
-	F("%s\n");
-	F("%p\n");
-	F("%d\n");
-	F("%i\n");
-	F("%u\n");
-	F("%x\n");
-	F("%X\n");
+	F("%c\n" , 'A');
+	F("%s\n", NULL);
+	F("%p\n" , &num);
+	F("%d\n", 2147483647);
+	F("%i\n", -2147483648);
+	F("%x\n", 2147483647);
+	F("%X\n", -2147483648);
 	F("%%\n");
 	return (0);
 }
