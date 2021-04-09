@@ -380,21 +380,36 @@ int	ft_put_s(va_list *ap, t_args *args)
 	string = va_arg(*ap, char *);
 	if (!string)
 		string = "(null)";
-	return(ft_putstr(string));
+	len = ft_strlen(string);
+	if (args->has_width == 1)
+		args->width -= len;
+	if (args->width > 0)
+	{
+		if (args->flags == 0)
+			ft_put_padding(args->width, ' ');
+		else if (args->flags == '0')
+			ft_put_padding(args->width, '0');
+		else if (args->flags == '-')
+		{
+			ft_putstr(string);
+			ft_put_padding(args->width, ' ');
+			return (len);
+		}
+	}
+	ft_putstr(string);
+	return(len);
 }
 
 int	ft_put_p(va_list *ap, t_args *args)
 {
-	int		res;
+	int		len;
 	size_t	addr;
 	char	*digits;
 
-	res = 0;
 	addr = (size_t)va_arg(*ap, void *);
 	digits = ft_utoa_base(addr, HEX);
-	res += ft_putstr("0x");
-	res += ft_putstr(digits);
-	return (res);
+	len = ft_putstr("0x") + ft_putstr(digits);
+	return (len);
 }
 
 int	ft_put_di(va_list *ap, t_args *args)
@@ -500,27 +515,58 @@ int	ft_printf(const char *format, ...)
 int	main(void)
 {
 	int num;
+	//c s p d i u x X %
+	// F("test %c");
+	// F("%*c\n"		, 9, 'B');
+	// F("%0*c\n"		, 9, 'B');
+	// F("%-*c\n"		, 9, 'B');
+	// F("%-0*c\n"		, 9, 'B');
 
-	F("test %c");
-	F("%*c\n" , 9, 'B');
-	F("%0*c\n" , 9, 'B');
-	F("%-*c\n" , 9, 'B');
-	F("%-0*c\n" , 9, 'B');
+	// F("%.*c\n"		, 9, 'B');
+	// F("%0.*c\n"		, 9, 'B');
+	// F("%-.*c\n"		, 9, 'B');
+	// F("%-0.*c\n"		, 9, 'B');
 
-	F("%.*c\n" , 9, 'B');
-	F("%0.*c\n" , 9, 'B');
-	F("%-.*c\n" , 9, 'B');
-	F("%-0.*c\n" , 9, 'B');
+	// F("%*.*c\n"		,15, 9, 'B');
+	// F("%0*.*c\n"		, 15, 9, 'B');
+	// F("%-*.*c\n"		, 15, 9, 'B');
+	// F("%-0*.*c\n"	, 15, 9, 'B');
 
-	F("%*.*c\n" ,15, 9, 'B');
-	F("%0*.*c\n" , 15, 9, 'B');
-	F("%-*.*c\n" , 15, 9, 'B');
-	F("%-0*.*c\n" , 15, 9, 'B');
+	// F("%*.*c\n"		, 9, 15, 'B');
+	// F("%0*.*c\n"		, 9, 15, 'B');
+	// F("%-*.*c\n"		, 9, 15, 'B');
+	// F("%-0*.*c\n"	, 9, 15, 'B');
 
-	F("%*.*c\n" ,9, 15, 'B');
-	F("%0*.*c\n" , 9, 15, 'B');
-	F("%-*.*c\n" , 9, 15, 'B');
-	F("%-0*.*c\n" , 9, 15, 'B');
+	// F("test %s\n");
+	// F("%*s\n"		, 9, "B");
+	// F("%0*s\n"		, 9, "B");
+	// F("%-*s\n"		, 9, "B");
+	// F("%-0*s\n"		, 9, "B");
+
+	// F("%.*s\n"		, 9, "B");
+	// F("%0.*s\n"		, 9, "B");
+	// F("%-.*s\n"		, 9, "B");
+	// F("%-0.*s\n"		, 9, "B");
+
+	// F("%*.*s\n" 		, 15, 9, "B");
+	// F("%0*.*s\n" 	, 15, 9, "B");
+	// F("%-*.*s\n" 	, 15, 9, "B");
+	// F("%-0*.*s\n"	, 15, 9, "B");
+
+	// F("%*.*s\n"		, 9, 15, "B");
+	// F("%0*.*s\n"		, 9, 15, "B");
+	// F("%-*.*s\n"		, 9, 15, "B");
+	// F("%-0*.*s\n"	, 9, 15, "B");
+
+	F("test %%p\n");
+	
+	F("%*p\n"	, 20, &num);
+	F("%0*p\n"	, 20, &num);
+	F("%-*p\n"	, 20, &num);
+	F("%-0*p\n"	, 20, &num);
+	F("%-*.15p\n"	, 20, &num);
+
+
 
 	return (0);
 }
