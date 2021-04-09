@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/02 23:14:15 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/08 20:05:12 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/09 15:15:25 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -338,12 +338,15 @@ int	readargs(char *str, t_args *args)
 }
 int	ft_put_padding(int	num, int c)
 {
+	int res;
+
+	res = num;
 	while (num > 0)
 	{
 		ft_putchar((char)c);
 		num--;
 	}
-	return (num);
+	return (res);
 }
 
 int	ft_put_c(va_list *ap, t_args *args)
@@ -353,22 +356,16 @@ int	ft_put_c(va_list *ap, t_args *args)
 
 	c = va_arg(*ap, int);
 	len = 1;
-	if (args->has_width == 1)
-		args->width -= len;
-	if (args->width > 0)
-	{
-		if (args->flags == 0)
-			ft_put_padding(args->width, ' ');
-		else if (args->flags == '0')
-			ft_put_padding(args->width, '0');
-		else if (args->flags == '-')
-		{
-			ft_putchar(c);
-			ft_put_padding(args->width, ' ');
-			return (len);
-		}
-	}
+	args->precision = 0;	// %c dose not consider precision
+	args->width -= (args->precision + len);
+	args->precision -= len;
+	if (args->flags == 0)
+		args->width -= ft_put_padding(args->width, ' ');
+	if (args->flags == '0')
+		args->width -= ft_put_padding(args->width, '0');
+	ft_put_padding(args->precision, '0');
 	ft_putchar(c);
+	ft_put_padding(args->width, ' ');
 	return (len);
 }
 
@@ -381,22 +378,16 @@ int	ft_put_s(va_list *ap, t_args *args)
 	if (!string)
 		string = "(null)";
 	len = ft_strlen(string);
-	if (args->has_width == 1)
-		args->width -= len;
-	if (args->width > 0)
-	{
-		if (args->flags == 0)
-			ft_put_padding(args->width, ' ');
-		else if (args->flags == '0')
-			ft_put_padding(args->width, '0');
-		else if (args->flags == '-')
-		{
-			ft_putstr(string);
-			ft_put_padding(args->width, ' ');
-			return (len);
-		}
-	}
+	args->precision = 0;	// %s dose not consider precision
+	args->width -= (args->precision + len);
+	args->precision -= len;
+	if (args->flags == 0)
+		args->width -= ft_put_padding(args->width, ' ');
+	if (args->flags == '0')
+		args->width -= ft_put_padding(args->width, '0');
+	ft_put_padding(args->precision, '0');
 	ft_putstr(string);
+	ft_put_padding(args->width, ' ');
 	return(len);
 }
 
@@ -408,7 +399,17 @@ int	ft_put_p(va_list *ap, t_args *args)
 
 	addr = (size_t)va_arg(*ap, void *);
 	digits = ft_utoa_base(addr, HEX);
-	len = ft_putstr("0x") + ft_putstr(digits);
+	len = 2 + ft_strlen(digits);
+	args->width -= (args->precision + len);
+	args->precision -= len;
+	if (args->flags == 0)
+		args->width -= ft_put_padding(args->width, ' ');
+	ft_putstr("0x");
+	if (args->flags == '0')
+		args->width -= ft_put_padding(args->width, '0');
+	ft_put_padding(args->precision, '0');
+	ft_putstr(digits);
+	ft_put_padding(args->width, ' ');
 	return (len);
 }
 
@@ -502,7 +503,7 @@ int	ft_printf(const char *format, ...)
 	free(args);
 	return (res);
 }
-
+// # define TEST
 #ifdef TEST
 # define F(...) \
 	ft_printf(__VA_ARGS__)
@@ -516,7 +517,7 @@ int	main(void)
 {
 	int num;
 	//c s p d i u x X %
-	// F("test %c");
+	// F("test\n");
 	// F("%*c\n"		, 9, 'B');
 	// F("%0*c\n"		, 9, 'B');
 	// F("%-*c\n"		, 9, 'B');
@@ -537,7 +538,7 @@ int	main(void)
 	// F("%-*.*c\n"		, 9, 15, 'B');
 	// F("%-0*.*c\n"	, 9, 15, 'B');
 
-	// F("test %s\n");
+	// F("test %%s\n");
 	// F("%*s\n"		, 9, "B");
 	// F("%0*s\n"		, 9, "B");
 	// F("%-*s\n"		, 9, "B");
@@ -559,14 +560,17 @@ int	main(void)
 	// F("%-0*.*s\n"	, 9, 15, "B");
 
 	F("test %%p\n");
-	
+
 	F("%*p\n"	, 20, &num);
 	F("%0*p\n"	, 20, &num);
 	F("%-*p\n"	, 20, &num);
 	F("%-0*p\n"	, 20, &num);
 	F("%-*.15p\n"	, 20, &num);
 
-
+	printf("%010.5d\n",123);
+	printf("%-10.5d\n",123);
+	printf("%010.15d\n",123);
+	printf("%-010.15d",123);
 
 	return (0);
 }
