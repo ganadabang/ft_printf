@@ -67,8 +67,6 @@ size_t	ft_strlen(char *str)
 
 static char				*conv_abs_to_str(char *str, unsigned int abs, char *set)
 {
-	size_t	len;
-
 	if (str == NULL)
 		return (NULL);
 	if (abs == 0)
@@ -338,13 +336,40 @@ int	readargs(char *str, t_args *args)
 	}
 	return (idx - str);
 }
+int	ft_put_padding(int	num, int c)
+{
+	while (num > 0)
+	{
+		ft_putchar((char)c);
+		num--;
+	}
+	return (num);
+}
 
 int	ft_put_c(va_list *ap, t_args *args)
 {
-	int c;
+	int	c;
+	int	len;
 
 	c = va_arg(*ap, int);
-	return (ft_putchar(c));
+	len = 1;
+	if (args->has_width == 1)
+		args->width -= len;
+	if (args->width > 0)
+	{
+		if (args->flags == 0)
+			ft_put_padding(args->width, ' ');
+		else if (args->flags == '0')
+			ft_put_padding(args->width, '0');
+		else if (args->flags == '-')
+		{
+			ft_putchar(c);
+			ft_put_padding(args->width, ' ');
+			return (len);
+		}
+	}
+	ft_putchar(c);
+	return (len);
 }
 
 int	ft_put_s(va_list *ap, t_args *args)
@@ -364,6 +389,7 @@ int	ft_put_p(va_list *ap, t_args *args)
 	size_t	addr;
 	char	*digits;
 
+	res = 0;
 	addr = (size_t)va_arg(*ap, void *);
 	digits = ft_utoa_base(addr, HEX);
 	res += ft_putstr("0x");
@@ -461,127 +487,40 @@ int	ft_printf(const char *format, ...)
 	free(args);
 	return (res);
 }
-// #define TEST
-// #ifndef TEST
+
+#ifdef TEST
 # define F(...) \
 	ft_printf(__VA_ARGS__)
-// #else
-// # include <stdio.h>
-// # define F(...) \
-// 	printf(__VA_ARGS__)
-// #endif
+#else
+# include <stdio.h>
+# define F(...) \
+	printf(__VA_ARGS__)
+#endif
 
 int	main(void)
 {
 	int num;
 
-	printf("==== basic format test ===\n");
-	F("%*.*c\n" ,9, 9, 'B');
-	F("%s\n", NULL);
-	F("%p\n" , &num);
-	F("%d\n", 2147483647);
-	F("%i\n", -2147483648);
-	F("%x\n", 2147483647);
-	F("%X\n", -2147483648);
-	F("%%\n");
+	F("test %c");
+	F("%*c\n" , 9, 'B');
+	F("%0*c\n" , 9, 'B');
+	F("%-*c\n" , 9, 'B');
+	F("%-0*c\n" , 9, 'B');
 
-	printf("====  flag + width test ===\n");
-	F("%010.*c\n" ,9, 9, 'B');
-	F("%010s\n", NULL);
-	F("%010p\n" , &num);
-	F("%010d\n", 2147483647);
-	F("%010i\n", -2147483648);
-	F("%010x\n", 2147483647);
-	F("%010X\n", -2147483648);
-	F("%010%\n");
+	F("%.*c\n" , 9, 'B');
+	F("%0.*c\n" , 9, 'B');
+	F("%-.*c\n" , 9, 'B');
+	F("%-0.*c\n" , 9, 'B');
 
-	F("%-10.*c\n" ,9, 9, 'B');
-	F("%-10s\n", NULL);
-	F("%-10p\n" , &num);
-	F("%-10d\n", 2147483647);
-	F("%-10i\n", -2147483648);
-	F("%-10x\n", 2147483647);
-	F("%-10X\n", -2147483648);
-	F("%-10%\n");
+	F("%*.*c\n" ,15, 9, 'B');
+	F("%0*.*c\n" , 15, 9, 'B');
+	F("%-*.*c\n" , 15, 9, 'B');
+	F("%-0*.*c\n" , 15, 9, 'B');
 
-	F("%-010.*c\n" ,9, 9, 'B');
-	F("%-010s\n", NULL);
-	F("%-010p\n" , &num);
-	F("%-010d\n", 2147483647);
-	F("%-010i\n", -2147483648);
-	F("%-010x\n", 2147483647);
-	F("%-010X\n", -2147483648);
-	F("%-010%\n");
-
-	printf("====  flag + precision test ===\n");
-
-	F("%0.10.*c\n" ,9, 9, 'B');
-	F("%0.10s\n", NULL);
-	F("%0.10p\n" , &num);
-	F("%0.10d\n", 2147483647);
-	F("%0.10i\n", -2147483648);
-	F("%0.10x\n", 2147483647);
-	F("%0.10X\n", -2147483648);
-	F("%0.10%\n");
-
-	F("%-.10.*c\n" ,9, 9, 'B');
-	F("%-.10s\n", NULL);
-	F("%-.10p\n" , &num);
-	F("%-.10d\n", 2147483647);
-	F("%-.10i\n", -2147483648);
-	F("%-.10x\n", 2147483647);
-	F("%-.10X\n", -2147483648);
-	F("%-.10%\n");
-
-	F("%-0.10.*c\n" ,9, 9, 'B');
-	F("%-0.10s\n", NULL);
-	F("%-0.10p\n" , &num);
-	F("%-0.10d\n", 2147483647);
-	F("%-0.10i\n", -2147483648);
-	F("%-0.10x\n", 2147483647);
-	F("%-0.10X\n", -2147483648);
-	F("%-0.10%\n");
-
-	printf("====  flag + width + precision test ===\n");
-
-	F("%05.10.*c\n" ,9, 9, 'B');
-	F("%05.10s\n", NULL);
-	F("%05.10p\n" , &num);
-	F("%05.10d\n", 2147483647);
-	F("%05.10i\n", -2147483648);
-	F("%05.10x\n", 2147483647);
-	F("%05.10X\n", -2147483648);
-	F("%05.10%\n");
-
-	F("%-5.10.*c\n" ,9, 9, 'B');
-	F("%-5.10s\n", NULL);
-	F("%-5.10p\n" , &num);
-	F("%-5.10d\n", 2147483647);
-	F("%-5.10i\n", -2147483648);
-	F("%-5.10x\n", 2147483647);
-	F("%-5.10X\n", -2147483648);
-	F("%-5.10%\n");
-
-	F("%-50.10.*c\n" ,9, 9, 'B');
-	F("%-05.10s\n", NULL);
-	F("%-05.10p\n" , &num);
-	F("%-05.10d\n", 2147483647);
-	F("%-05.10i\n", -2147483648);
-	F("%-05.10x\n", 2147483647);
-	F("%-05.10X\n", -2147483648);
-	F("%-05.10%\n");
-
-	F("%-50.10.*c\n" ,9, 9, 'B');
-	F("%-20.10s\n", NULL);
-	F("%-20.10p\n" , &num);
-	F("%-20.10d\n", 2147483647);
-	F("%-20.10i\n", -2147483648);
-	F("%-20.10x\n", 2147483647);
-	F("%-20.10X\n", -2147483648);
-	F("%-20.10%\n");
-
-
-
+	F("%*.*c\n" ,9, 15, 'B');
+	F("%0*.*c\n" , 9, 15, 'B');
+	F("%-*.*c\n" , 9, 15, 'B');
+	F("%-0*.*c\n" , 9, 15, 'B');
 
 	return (0);
 }
