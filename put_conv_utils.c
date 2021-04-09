@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 16:12:16 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/09 22:01:23 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/10 01:33:42 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	ft_put_c(va_list *ap, t_args *args)
 	}
 	args->width -= (args->precision + len);
 	args->precision -= len;
-	len += args->width;
+	if (args->width > 0)
+		len += args->width;
 	if (args->flags == 0)
 		args->width -= ft_put_padding(args->width, ' ');
 	if (args->flags == '0')

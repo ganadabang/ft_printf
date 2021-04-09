@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 16:03:15 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/10 01:05:51 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/10 01:47:45 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	readprecision(char *str, t_args *args)
 int	ft_isformat(int c)
 {
 	return (ft_strchr(CONV, c) || ft_isspace(c) || ft_isflag(c) || \
-	ft_isdigit(c) || (c == '.'));
+	ft_isdigit(c) || (c == '.') || (c == '*'));
 }
 
 int	readargs(char *str, t_args *args)
