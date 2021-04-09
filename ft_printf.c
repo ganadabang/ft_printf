@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/02 23:14:15 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/09 15:15:25 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/09 15:29:22 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -416,38 +416,97 @@ int	ft_put_p(va_list *ap, t_args *args)
 int	ft_put_di(va_list *ap, t_args *args)
 {
 	char	*digits;
+	int		len;
 
 	digits = ft_itoa(va_arg(*ap, int));
-	return (ft_putstr(digits));
+	len = ft_strlen(digits);
+	args->width -= (args->precision + len);
+	args->precision -= len;
+	if (args->flags == 0)
+		args->width -= ft_put_padding(args->width, ' ');
+	if (args->flags == '0')
+		args->width -= ft_put_padding(args->width, '0');
+	ft_put_padding(args->precision, '0');
+	ft_putstr(digits);
+	ft_put_padding(args->width, ' ');
+	return (len);
 }
 
 int	ft_put_u(va_list *ap, t_args *args)
 {
 	char	*digits;
+	int		len;
 
 	digits = ft_utoa_base(va_arg(*ap, int), DEC);
+	len = ft_strlen(digits);
+	args->width -= (args->precision + len);
+	args->precision -= len;
+	if (args->flags == 0)
+		args->width -= ft_put_padding(args->width, ' ');
+	if (args->flags == '0')
+		args->width -= ft_put_padding(args->width, '0');
+	ft_put_padding(args->precision, '0');
+	ft_putstr(digits);
+	ft_put_padding(args->width, ' ');
 	return (ft_putstr(digits));
 }
 
 int	ft_put_x(va_list *ap, t_args *args)
 {
 	char	*digits;
+	int		len;
 
 	digits = ft_utoa_base(va_arg(*ap, int), HEX);
+	len = 2 + ft_strlen(digits);
+	args->width -= (args->precision + len);
+	args->precision -= len;
+	if (args->flags == 0)
+		args->width -= ft_put_padding(args->width, ' ');
+	ft_putstr("0x");
+	if (args->flags == '0')
+		args->width -= ft_put_padding(args->width, '0');
+	ft_put_padding(args->precision, '0');
+	ft_putstr(digits);
+	ft_put_padding(args->width, ' ');
 	return (ft_putstr(digits));
 }
 
 int	ft_put_X(va_list *ap, t_args *args)
 {
 	char	*digits;
+	int		len;
 
 	digits = ft_utoa_base(va_arg(*ap, int), CHEX);
+	len = 2 + ft_strlen(digits);
+	args->width -= (args->precision + len);
+	args->precision -= len;
+	if (args->flags == 0)
+		args->width -= ft_put_padding(args->width, ' ');
+	ft_putstr("0X");
+	if (args->flags == '0')
+		args->width -= ft_put_padding(args->width, '0');
+	ft_put_padding(args->precision, '0');
+	ft_putstr(digits);
+	ft_put_padding(args->width, ' ');
 	return (ft_putstr(digits));
 }
 
 int	ft_put_percent(va_list *ap, t_args *args)
 {
-	return (ft_putchar('%'));
+	int	len;
+
+	len = 1;
+	args->precision = 0;
+	args->width -= (args->precision + len);
+	args->precision -= len;
+	if (args->flags == 0)
+		args->width -= ft_put_padding(args->width, ' ');
+	if (args->flags == '0')
+		args->width -= ft_put_padding(args->width, '0');
+	ft_put_padding(args->precision, '0');
+	ft_putchar('%');
+	ft_put_padding(args->width, ' ');
+	return (len);
 }
 
 int	ft_put_conv(va_list *ap, t_args *args)
@@ -502,75 +561,4 @@ int	ft_printf(const char *format, ...)
 	va_end(ap);
 	free(args);
 	return (res);
-}
-// # define TEST
-#ifdef TEST
-# define F(...) \
-	ft_printf(__VA_ARGS__)
-#else
-# include <stdio.h>
-# define F(...) \
-	printf(__VA_ARGS__)
-#endif
-
-int	main(void)
-{
-	int num;
-	//c s p d i u x X %
-	// F("test\n");
-	// F("%*c\n"		, 9, 'B');
-	// F("%0*c\n"		, 9, 'B');
-	// F("%-*c\n"		, 9, 'B');
-	// F("%-0*c\n"		, 9, 'B');
-
-	// F("%.*c\n"		, 9, 'B');
-	// F("%0.*c\n"		, 9, 'B');
-	// F("%-.*c\n"		, 9, 'B');
-	// F("%-0.*c\n"		, 9, 'B');
-
-	// F("%*.*c\n"		,15, 9, 'B');
-	// F("%0*.*c\n"		, 15, 9, 'B');
-	// F("%-*.*c\n"		, 15, 9, 'B');
-	// F("%-0*.*c\n"	, 15, 9, 'B');
-
-	// F("%*.*c\n"		, 9, 15, 'B');
-	// F("%0*.*c\n"		, 9, 15, 'B');
-	// F("%-*.*c\n"		, 9, 15, 'B');
-	// F("%-0*.*c\n"	, 9, 15, 'B');
-
-	// F("test %%s\n");
-	// F("%*s\n"		, 9, "B");
-	// F("%0*s\n"		, 9, "B");
-	// F("%-*s\n"		, 9, "B");
-	// F("%-0*s\n"		, 9, "B");
-
-	// F("%.*s\n"		, 9, "B");
-	// F("%0.*s\n"		, 9, "B");
-	// F("%-.*s\n"		, 9, "B");
-	// F("%-0.*s\n"		, 9, "B");
-
-	// F("%*.*s\n" 		, 15, 9, "B");
-	// F("%0*.*s\n" 	, 15, 9, "B");
-	// F("%-*.*s\n" 	, 15, 9, "B");
-	// F("%-0*.*s\n"	, 15, 9, "B");
-
-	// F("%*.*s\n"		, 9, 15, "B");
-	// F("%0*.*s\n"		, 9, 15, "B");
-	// F("%-*.*s\n"		, 9, 15, "B");
-	// F("%-0*.*s\n"	, 9, 15, "B");
-
-	F("test %%p\n");
-
-	F("%*p\n"	, 20, &num);
-	F("%0*p\n"	, 20, &num);
-	F("%-*p\n"	, 20, &num);
-	F("%-0*p\n"	, 20, &num);
-	F("%-*.15p\n"	, 20, &num);
-
-	printf("%010.5d\n",123);
-	printf("%-10.5d\n",123);
-	printf("%010.15d\n",123);
-	printf("%-010.15d",123);
-
-	return (0);
 }
