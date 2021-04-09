@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 15:39:50 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/09 17:30:33 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/09 22:59:45 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,10 @@ typedef struct	s_args
 	int			w_asterisk;
 	int			p_asterisk;
 }				t_args;
+
+int				ft_printf(const char *str, ...);
 /*
-**		utils/*
+**		utils
 */
 void			*ft_calloc(size_t count, size_t size);
 size_t			ft_strlen(char *str);
@@ -57,12 +59,13 @@ int				readflags(char *str, t_args *args);
 int				readwidth(char *str, t_args *args);
 int				readprecision(char *str, t_args *args);
 int				readargs(char *str, t_args *args);
+int				ft_isformat(int c);
 /*
 **		readargs_utils
 */
 void			initialize_args(t_args *args);
 int				ft_isflag(int c);
-int				ft_istype(char c, t_args *args);
+int				readtype(char *str, t_args *args);
 int				ft_getdigits(char *str);
 /*
 **		put_conv_utils
@@ -71,7 +74,7 @@ int				ft_put_c(va_list *ap, t_args *args);
 int				ft_put_s(va_list *ap, t_args *args);
 int				ft_put_p(va_list *ap, t_args *args);
 int				ft_put_di(va_list *ap, t_args *args);
-int				ft_put_percent(va_list *ap, t_args *args);
+int				ft_put_percent(t_args *args);
 /*
 **		put_conv
 */

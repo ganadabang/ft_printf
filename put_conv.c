@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   putargs.c                                          :+:      :+:    :+:   */
+/*   put_conv.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 16:11:51 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/09 17:20:49 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/09 22:24:21 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ int	ft_put_x(va_list *ap, t_args *args)
 	args->precision -= len;
 	if (args->flags == 0)
 		args->width -= ft_put_padding(args->width, ' ');
-	ft_putstr("0x");
+	if (digits[0] != '0')
+		ft_putstr("0x");
 	if (args->flags == '0')
 		args->width -= ft_put_padding(args->width, '0');
 	ft_put_padding(args->precision, '0');
@@ -62,7 +63,8 @@ int	ft_put_cx(va_list *ap, t_args *args)
 	args->precision -= len;
 	if (args->flags == 0)
 		args->width -= ft_put_padding(args->width, ' ');
-	ft_putstr("0X");
+	if (digits[0] != '0')
+		ft_putstr("0X");
 	if (args->flags == '0')
 		args->width -= ft_put_padding(args->width, '0');
 	ft_put_padding(args->precision, '0');
@@ -105,6 +107,6 @@ int	ft_put_conv(va_list *ap, t_args *args)
 	if (args->type == 'X')
 		return (ft_put_cx(ap, args));
 	if (args->type == '%')
-		return (ft_put_percent(ap, args));
+		return (ft_put_percent(args));
 	return (0);
 }

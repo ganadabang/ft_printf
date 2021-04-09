@@ -1,42 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/02 23:14:15 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/09 21:31:59 by hyeonsok         ###   ########.fr       */
+/*   Created: 2021/04/09 20:21:18 by hyeonsok          #+#    #+#             */
+/*   Updated: 2021/04/09 23:04:56 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libftprintf.h"
+#include <stdio.h>
 
-int	ft_printf(const char *str, ...)
+# define F(...) \
+	ft_printf(__VA_ARGS__)
+
+int	main(void)
 {
-	char	*itr;
-	int		res;
-	va_list	ap;
-	t_args	*args;
+	int	num;
+	char c = 'a';
 
-	itr = (char *)str;
-	if (!itr)
-		return (0);
-	args = (t_args *)malloc(sizeof(t_args));
-	va_start(ap, str);
-	res = 0;
-	while (*itr)
-	{
-		if (*itr == '%')
-		{
-			itr++;
-			itr += readargs(itr, args);
-			res += ft_put_conv(&ap, args);
-			continue ;
-		}
-		res += ft_putchar(*itr++);
-	}
-	va_end(ap);
-	free(args);
-	return (res);
+	num = ft_printf("-->|%.4c|<--\n", c);
+	printf("%d\n", num);
+	num = printf("-->|%.4c|<--\n", c);
+	printf("%d\n", num);
 }

@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 16:04:04 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/09 17:30:56 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/09 22:59:50 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@ int		ft_isflag(int c)
 	return ((c == '0') || (c == '-'));
 }
 
-int		ft_istype(char c, t_args *args)
+int		readtype(char *str, t_args *args)
 {
 	char	*type;
 
-	type = ft_strchr(CONV, c);
+	type = ft_strchr(CONV, *str);
 	if (type != NULL)
 	{
 		args->type = *type;

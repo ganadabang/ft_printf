@@ -1,21 +1,41 @@
-CC = gcc
+.PHONY : all claen fclean re
 
+NAME = libftprintf.a
+
+CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 
-SRCS = ft_printf.c
+SRCS = ft_printf.c\
+		readargs.c\
+		readargs_utils.c\
+		put_conv.c\
+		put_conv_utils.c\
+		utils/ft_atoi.c\
+		utils/ft_calloc.c\
+		utils/ft_isdigit.c\
+		utils/ft_isspace.c\
+		utils/ft_itoa.c\
+		utils/ft_memset.c\
+		utils/ft_putchar.c\
+		utils/ft_putstr.c\
+		utils/ft_strchr.c\
+		utils/ft_strlen.c\
+		utils/ft_utoa_base.c
 
+OBJS = $(SRCS:.c=.o)
 
-all : 
-	./test.sh
+all : $(NAME)
 
-normal :
-	${CC} ${CFLAGS} ${SRCS} -o printf
+$(NAME) : $(OBJS)
+	ar -rcs $@ $^
 
-test :
-	${CC} ${CFLAGS} -D TEST ${SRCS} -o ft_printf
+.c.o :
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean :
-	rm printf ft_printf
+	rm -rf $(OBJS)
 
-re :
-	clean all
+fclean : clean
+	rm -rf $(NAME)
+
+re : fclean all
