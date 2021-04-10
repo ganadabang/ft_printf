@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 15:39:50 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/09 22:59:45 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/10 19:29:22 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int				ft_printf(const char *str, ...);
 */
 void			*ft_calloc(size_t count, size_t size);
 size_t			ft_strlen(char *str);
-char			*ft_utoa_base(int n, char *set);
+char			*ft_utoa_base(unsigned long long n, char *set);
 char			*ft_itoa(int n);
 int				ft_putchar(char c);
 int				ft_putstr(char *str);
