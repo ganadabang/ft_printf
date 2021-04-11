@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 16:12:16 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/11 21:42:21 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/11 22:01:35 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,16 +132,18 @@ int	ft_put_percent(t_args *args)
 {
 	int	len;
 
-	len = 1;
-	args->precision = 0;
-	args->width -= (args->precision + len);
-	args->precision -= len;
+	len = 0;
+	if (args->width < 0)
+	{
+		args->width *= -1;
+		args->flags = '-';
+	}
 	if (args->flags == 0)
-		args->width -= ft_put_padding(args->width, ' ');
+		len += ft_put_padding(args->width - 1, ' ');
 	if (args->flags == '0')
-		args->width -= ft_put_padding(args->width, '0');
-	ft_put_padding(args->precision, '0');
-	ft_putchar('%');
-	ft_put_padding(args->width, ' ');
+		len += ft_put_padding(args->width - 1, '0');
+	len += ft_putchar('%');
+	if (args->flags == '-')
+		len += ft_put_padding(args->width - 1, ' ');
 	return (len);
 }
