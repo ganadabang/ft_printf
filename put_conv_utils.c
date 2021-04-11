@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 16:12:16 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/10 20:17:24 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/11 21:42:21 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,26 +77,35 @@ int	ft_put_s(va_list *ap, t_args *args)
 
 int	ft_put_p(va_list *ap, t_args *args)
 {
-	int		len;
-	unsigned long long addr;
-	char	*digits;
-	// int		res;
+	int					len;
+	unsigned long long	addr;
+	char				*digits;
+	int					res;
 
 	addr = (unsigned long long)va_arg(*ap, void *);
 	digits = ft_utoa_base(addr, HEX);
-	if (args->has_precision && digits[0] == '0')
+	if (args->has_precision == 1 && digits[0] == '0')
 		digits = "";
-	len = ft_strlen(digits);	// 출력할 길이를 정했음
-	if (args->width > len)
+	if (args->width < 0)
+	{
+		args->width *= -1;
+		args->flags = '-';
+	}
+	res = ft_strlen(digits) + 2;
+	if (args->precision + 2 > res)
+		res = args->precision + 2;
+	len = res;
+	if (args->width > res)
 		len = args->width;
-	if (args->flags == 0)
-		len -= ft_put_padding(len - ft_strlen(digits), ' ');
-	ft_putstr("0x");
 	if (args->flags == '0')
-		args->width -= ft_put_padding(len - ft_strlen(digits), '0');
-	ft_put_padding(args->precision, '0');
+		args->width -= ft_put_padding(len - res, '0');
+	if (args->flags == '\0')
+		args->width -= ft_put_padding(len - res, ' ');
+	ft_putstr("0x");
+	args->precision -= ft_put_padding(args->precision - ft_strlen(digits), '0');
 	ft_putstr(digits);
-	ft_put_padding(args->width, ' ');
+	if (args->flags == '-')
+		ft_put_padding(len - res, ' ');
 	return (len);
 }
 
