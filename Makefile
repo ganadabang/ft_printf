@@ -20,7 +20,8 @@ SRCS = ft_printf.c\
 		utils/ft_putstr.c\
 		utils/ft_strchr.c\
 		utils/ft_strlen.c\
-		utils/ft_utoa_base.c
+		utils/ft_utoa_base.c\
+		utils/ft_lltoa_base.c
 
 OBJS = $(SRCS:.c=.o)
 
