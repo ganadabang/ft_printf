@@ -6,10 +6,10 @@ CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 
 SRCS = ft_printf.c\
-		readargs.c\
-		readargs_utils.c\
-		put_conv.c\
-		put_conv_utils.c\
+		read_utils_1.c\
+		read_utils_2.c\
+		put_utils_1.c\
+		put_utils_2.c\
 		utils/ft_atoi.c\
 		utils/ft_calloc.c\
 		utils/ft_isdigit.c\

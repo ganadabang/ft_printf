@@ -35,7 +35,7 @@ static char			*conv_abs_to_str(char *str, long long abs, char *set)
 char				*ft_lltoa_base(long long n, char *set)
 {
 	long long	len;
-	char			*str;
+	char		*str;
 
 	len = get_len(n);
 	str = ft_calloc(len + 1, sizeof(char));

@@ -12,7 +12,7 @@
 
 #include "../libftprintf.h"
 
-static unsigned int	get_len(long long n)
+static unsigned int	get_len(unsigned int n)
 {
 	if (n >= 0 && n < 10)
 		return (1);

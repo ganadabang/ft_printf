@@ -19,7 +19,8 @@ void	*ft_calloc(size_t count, size_t size)
 	unsigned long long	len;
 
 	len = size * count;
-	if (!(ptr = (void *)malloc(len)))
+	ptr = (void *)malloc(len);
+	if (!ptr)
 		return (NULL);
 	first_ptr = ptr;
 	while (len--)
