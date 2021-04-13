@@ -38,6 +38,8 @@ typedef struct	s_args
 }				t_args;
 
 int				ft_printf(const char *str, ...);
+int				ft_put_conv(va_list *ap, t_args *args);
+int				readargs(char *str, t_args *args);
 /*
 **		utils
 */
@@ -59,15 +61,15 @@ char			*ft_strchr(const char *s, int c);
 int				readflags(char *str, t_args *args);
 int				readwidth(char *str, t_args *args);
 int				readprecision(char *str, t_args *args);
-int				readargs(char *str, t_args *args);
-int				ft_isformat(int c);
+int				readtype(char *str, t_args *args);
+void			initialize_args(t_args *args);
 /*
 **		readargs_utils
 */
-void			initialize_args(t_args *args);
 int				ft_isflag(int c);
-int				readtype(char *str, t_args *args);
 int				ft_getdigits(char *str);
+int				ft_isminus(int	c);
+int				ft_isformat(int c);
 /*
 **		put_conv_utils
 */
@@ -83,6 +85,6 @@ int				ft_put_u(va_list *ap, t_args *args);
 int				ft_put_x(va_list *ap, t_args *args);
 int				ft_put_cx(va_list *ap, t_args *args);
 int				ft_put_padding(int	num, int c);
-int				ft_put_conv(va_list *ap, t_args *args);
+void			control_args(va_list *ap, t_args *args);
 
 #endif
