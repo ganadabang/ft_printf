@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 15:39:50 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/12 19:22:39 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/13 13:18:32 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int				ft_isdigit(int c);
 int				ft_isspace(int c);
 char			*ft_strchr(const char *s, int c);
 /*
-**		readargs
+**		read_utils_1
 */
 int				readflags(char *str, t_args *args);
 int				readwidth(char *str, t_args *args);
@@ -64,14 +64,14 @@ int				readprecision(char *str, t_args *args);
 int				readtype(char *str, t_args *args);
 void			initialize_args(t_args *args);
 /*
-**		readargs_utils
+**		read_utils_2
 */
 int				ft_isflag(int c);
 int				ft_getdigits(char *str);
 int				ft_isminus(int	c);
 int				ft_isformat(int c);
 /*
-**		put_conv_utils
+**		put_utils_2
 */
 int				ft_put_c(va_list *ap, t_args *args);
 int				ft_put_s(va_list *ap, t_args *args);
@@ -79,7 +79,7 @@ int				ft_put_p(va_list *ap, t_args *args);
 int				ft_put_di(va_list *ap, t_args *args);
 int				ft_put_percent(t_args *args);
 /*
-**		put_conv
+**		put_utils1
 */
 int				ft_put_u(va_list *ap, t_args *args);
 int				ft_put_x(va_list *ap, t_args *args);
