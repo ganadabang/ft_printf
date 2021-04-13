@@ -61,7 +61,10 @@ int	ft_put_p(va_list *ap, t_args *args)
 	addr = (long long)va_arg(*ap, void *);
 	digits = ft_lltoa_base(addr, HEX);
 	if (args->has_precision == 1 && digits[0] == '0')
+	{
+		free(digits);
 		digits = "";
+	}
 	res = 0;
 	if (args->precision < (int)ft_strlen(digits))
 		args->precision = (int)ft_strlen(digits);
@@ -75,6 +78,7 @@ int	ft_put_p(va_list *ap, t_args *args)
 	args->precision -= ft_put_padding(args->precision - ft_strlen(digits), '0');
 	res += ft_putstr(digits);
 	res += ft_put_padding(args->width - res, ' ');
+	free(digits);
 	return (res);
 }
 
@@ -86,7 +90,10 @@ int	ft_put_di(va_list *ap, t_args *args)
 
 	digits = ft_itoa(va_arg(*ap, int));
 	if (args->has_precision == 1 && digits[0] == '0')
+	{
+		free(digits);
 		digits = "";
+	}
 	if (digits[0] == '-')
 		args->precision++;
 	res = 0;
@@ -104,6 +111,7 @@ int	ft_put_di(va_list *ap, t_args *args)
 	res += ft_put_padding(args->precision - ft_strlen(digits), '0');
 	res += ft_putstr(digits + ft_isminus(*digits));
 	res += ft_put_padding(args->width - res, ' ');
+	free(digits);
 	return (res);
 }
 

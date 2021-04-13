@@ -20,7 +20,10 @@ int	ft_put_u(va_list *ap, t_args *args)
 
 	digits = ft_utoa_base(va_arg(*ap, int), DEC);
 	if (args->has_precision == 1 && digits[0] == '0')
+	{
+		free(digits);
 		digits = "";
+	}
 	res = 0;
 	if (args->precision < (int)ft_strlen(digits))
 		args->precision = (int)ft_strlen(digits);
@@ -34,6 +37,7 @@ int	ft_put_u(va_list *ap, t_args *args)
 	res += ft_put_padding(args->precision - ft_strlen(digits), '0');
 	res += ft_putstr(digits);
 	res += ft_put_padding(args->width - res, ' ');
+	free(digits);
 	return (res);
 }
 
@@ -45,7 +49,10 @@ int	ft_put_x(va_list *ap, t_args *args)
 
 	digits = ft_utoa_base(va_arg(*ap, int), HEX);
 	if (args->has_precision == 1 && digits[0] == '0')
+	{
+		free(digits);
 		digits = "";
+	}
 	res = 0;
 	if (args->precision < (int)ft_strlen(digits))
 		args->precision = (int)ft_strlen(digits);
@@ -59,6 +66,7 @@ int	ft_put_x(va_list *ap, t_args *args)
 	res += ft_put_padding(args->precision - ft_strlen(digits), '0');
 	res += ft_putstr(digits);
 	res += ft_put_padding(args->width - res, ' ');
+	free(digits);
 	return (res);
 }
 
@@ -70,7 +78,10 @@ int	ft_put_cx(va_list *ap, t_args *args)
 
 	digits = ft_utoa_base(va_arg(*ap, int), CHEX);
 	if (args->has_precision == 1 && digits[0] == '0')
+	{
+		free(digits);
 		digits = "";
+	}
 	res = 0;
 	if (args->precision < (int)ft_strlen(digits))
 		args->precision = (int)ft_strlen(digits);
@@ -84,6 +95,7 @@ int	ft_put_cx(va_list *ap, t_args *args)
 	res += ft_put_padding(args->precision - ft_strlen(digits), '0');
 	res += ft_putstr(digits);
 	res += ft_put_padding(args->width - res, ' ');
+	free(digits);
 	return (res);
 }
 

@@ -12,14 +12,14 @@
 
 #include "../libftprintf.h"
 
-static long long	get_len(long long n)
+static unsigned int	get_len(unsigned int n, unsigned int len)
 {
-	if (n >= 0 && n < 10)
+	if (n >= 0 && n < len)
 		return (1);
-	return (1 + get_len(n / 10));
+	return (1 + get_len(n / len, len));
 }
 
-static char			*conv_abs_to_str(char *str, long long abs, char *set)
+static char			*conv_abs_to_str(char *str, size_t abs, char *set)
 {
 	if (str == NULL)
 		return (NULL);
@@ -37,7 +37,7 @@ char				*ft_lltoa_base(long long n, char *set)
 	long long	len;
 	char		*str;
 
-	len = get_len(n);
+	len = get_len(n, ft_strlen(set));
 	str = ft_calloc(len + 1, sizeof(char));
 	if (!str)
 		return (NULL);
