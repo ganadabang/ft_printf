@@ -11,19 +11,62 @@
 /* ************************************************************************** */
 
 #include "libftprintf.h"
-#include <stdio.h>
+
+int	readargs(char *str, t_args *args)
+{
+	char	*idx;
+
+	idx = str;
+	initialize_args(args);
+	while (*idx != '\0' && ft_isformat(*idx))
+	{
+		if (args->has_flags == 0)
+			idx += readflags(idx, args);
+		if (args->has_width == 0)
+			idx += readwidth(idx, args);
+		if (args->has_precision == 0)
+			idx += readprecision(idx, args);
+		if (readtype(idx, args))
+		{
+			idx++;
+			break ;
+		}
+	}
+	return (idx - str);
+}
+
+int	ft_put_conv(va_list *ap, t_args *args)
+{
+	control_args(ap, args);
+	if (args->type == 'c')
+		return (ft_put_c(ap, args));
+	if (args->type == 's')
+		return (ft_put_s(ap, args));
+	if (args->type == 'p')
+		return (ft_put_p(ap, args));
+	if (args->type == 'd' || args->type == 'i')
+		return (ft_put_di(ap, args));
+	if (args->type == 'u')
+		return (ft_put_u(ap, args));
+	if (args->type == 'x')
+		return (ft_put_x(ap, args));
+	if (args->type == 'X')
+		return (ft_put_cx(ap, args));
+	if (args->type == '%')
+		return (ft_put_percent(args));
+	return (0);
+}
 
 int	ft_printf(const char *str, ...)
 {
 	char	*itr;
 	int		res;
 	va_list	ap;
-	t_args	*args;
+	t_args	args;
 
 	itr = (char *)str;
 	if (!itr)
 		return (0);
-	args = (t_args *)malloc(sizeof(t_args));
 	va_start(ap, str);
 	res = 0;
 	while (*itr)
@@ -31,13 +74,12 @@ int	ft_printf(const char *str, ...)
 		if (*itr == '%')
 		{
 			itr++;
-			itr += readargs(itr, args);
-			res += ft_put_conv(&ap, args);
+			itr += readargs(itr, &args);
+			res += ft_put_conv(&ap, &args);
 			continue ;
 		}
 		res += ft_putchar(*itr++);
 	}
 	va_end(ap);
-	free(args);
 	return (res);
 }
