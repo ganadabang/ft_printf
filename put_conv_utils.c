@@ -65,7 +65,7 @@ int	ft_put_p(va_list *ap, t_args *args)
 		digits = "";
 	res = 0;
 	if (args->precision < (int)ft_strlen(digits))
-	args->precision = (int)ft_strlen(digits);
+		args->precision = (int)ft_strlen(digits);
 	if (args->width < args->precision + 2)
 		args->width = args->precision + 2;
 	if (args->flags == '0')
@@ -79,29 +79,38 @@ int	ft_put_p(va_list *ap, t_args *args)
 	return (res);
 }
 
+int	ft_isminus(int	c)
+{
+	if (c == '-')
+		return (1);
+	return (0);
+}
+
 int	ft_put_di(va_list *ap, t_args *args)
 {
 	char	*digits;
+	int		dsc;
 	int		res;
 
 	digits = ft_itoa(va_arg(*ap, int));
 	if (args->has_precision == 1 && digits[0] == '0')
 		digits = "";
-	res = 0;
 	if (digits[0] == '-')
 		args->precision++;
+	res = 0;
 	if (args->precision < (int)ft_strlen(digits))
 		args->precision = (int)ft_strlen(digits);
 	if (args->width < args->precision)
 		args->width = args->precision;
-	if (args->flags == '\0')
+	dsc = (args->has_precision == 1) && (args->flags == '0');
+	if (args->flags == '\0' || dsc)
 		res += ft_put_padding(args->width - args->precision, ' ');
 	if (digits[0] == '-')
-		ft_putchar(*digits++);
-	if (args->flags == '0')
+		res += ft_putchar(*digits);
+	if (args->flags == '0' && args->has_precision == -1)
 		res += ft_put_padding(args->width - args->precision, '0');
 	res += ft_put_padding(args->precision - ft_strlen(digits), '0');
-	res += ft_putstr(digits);
+	res += ft_putstr(digits + ft_isminus(*digits));
 	res += ft_put_padding(args->width - res, ' ');
 	return (res);
 }
@@ -120,13 +129,3 @@ int	ft_put_percent(t_args *args)
 		res += ft_put_padding(args->width - res, ' ');
 	return (res);
 }
-
-// di
-
-//precision이 존재할 때 flag의 0 옵션이 고려되지 않고 있다.
-//그냥 flag를 가지지 않은 것과 동일하게 출력되는 것 같다.
-//precision이 음수일 때는 precision이 없는 것 처럼 움직이는 것 같다.
-//precision에 의해서 0이 출력될 때는 자기 자신을 게산해서 하나 제외한다.
-//나머지는 거의 동일한 것으로 보인다.
-//음수일때precision을 고려할 때 주의할 필요가 있다.
-
