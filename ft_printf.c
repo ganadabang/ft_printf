@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/02 23:14:15 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/14 15:23:55 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/14 23:58:14 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,8 @@ int	ft_printf(const char *str, ...)
 				res += ft_put_conv(&ap, &args);
 				continue ;
 			}
-			res += ft_putchar(*itr++);
+			res += ft_putchar(*itr);
+			itr++;
 		}
 	}
 	va_end(ap);
