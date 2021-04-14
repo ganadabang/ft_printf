@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 15:39:50 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/13 13:18:32 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/14 15:22:58 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ int				readargs(char *str, t_args *args);
 */
 void			*ft_calloc(size_t count, size_t size);
 size_t			ft_strlen(char *str);
-char			*ft_utoa_base(int n, char *set);
-char			*ft_lltoa_base(long long n, char *set);
+char			*ft_uitoa_base(int n, char *set);
+char			*ft_ulltoa_base(unsigned long long n, char *set);
 char			*ft_itoa(int n);
 int				ft_putchar(char c);
 int				ft_putstr(char *str);
@@ -55,6 +55,8 @@ int				ft_atoi(const char *str);
 int				ft_isdigit(int c);
 int				ft_isspace(int c);
 char			*ft_strchr(const char *s, int c);
+char			*ft_strdup(const char *s1);
+void			*ft_memcpy(void *dst, const void *src, size_t n);
 /*
 **		read_utils_1
 */
@@ -68,8 +70,15 @@ void			initialize_args(t_args *args);
 */
 int				ft_isflag(int c);
 int				ft_getdigits(char *str);
-int				ft_isminus(int	c);
 int				ft_isformat(int c);
+/*
+**		put_utils1
+*/
+int				ft_put_u(va_list *ap, t_args *args);
+int				ft_put_x(va_list *ap, t_args *args);
+int				ft_put_cx(va_list *ap, t_args *args);
+int				ft_put_padding(int	num, int c);
+void			validate_args(va_list *ap, t_args *args);
 /*
 **		put_utils_2
 */
@@ -79,12 +88,10 @@ int				ft_put_p(va_list *ap, t_args *args);
 int				ft_put_di(va_list *ap, t_args *args);
 int				ft_put_percent(t_args *args);
 /*
-**		put_utils1
+**		put_utils_3
 */
-int				ft_put_u(va_list *ap, t_args *args);
-int				ft_put_x(va_list *ap, t_args *args);
-int				ft_put_cx(va_list *ap, t_args *args);
-int				ft_put_padding(int	num, int c);
-void			control_args(va_list *ap, t_args *args);
+char			*free_and_dup_nul(char *digits);
+int				cmp(int num1, int num2);
+int				ft_isminus(int	c);
 
 #endif

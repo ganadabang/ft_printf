@@ -1,36 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   read_utils_2.c                                     :+:      :+:    :+:   */
+/*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/09 16:04:04 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/13 17:39:50 by hyeonsok         ###   ########.fr       */
+/*   Created: 2021/04/13 17:10:38 by hyeonsok          #+#    #+#             */
+/*   Updated: 2021/04/13 17:16:42 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libftprintf.h"
+#include "../libftprintf.h"
 
-int	ft_isflag(int c)
+void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	return ((c == '0') || (c == '-'));
-}
+	void *first_dst;
 
-int	ft_getdigits(char *str)
-{
-	char	*idx;
-
-	idx = str;
-	if (*idx == '+' || *idx == '-')
-		idx++;
-	while (ft_isdigit(*idx))
-		idx++;
-	return (idx - str);
-}
-
-int	ft_isformat(int c)
-{
-	return (ft_strchr(CONV, c) || ft_isspace(c) || ft_isflag(c) || \
-	ft_isdigit(c) || (c == '.') || (c == '*'));
+	first_dst = dst;
+	if (dst == src)
+		return (first_dst);
+	while (n--)
+		*(char *)dst++ = *(char *)src++;
+	return (first_dst);
 }

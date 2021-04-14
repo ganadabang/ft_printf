@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   put_conv_utils.c                                   :+:      :+:    :+:   */
+/*   put_utils_2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 16:12:16 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/12 21:46:27 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/14 15:14:05 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,22 +54,19 @@ int	ft_put_s(va_list *ap, t_args *args)
 
 int	ft_put_p(va_list *ap, t_args *args)
 {
-	long long	addr;
-	char		*digits;
-	int			res;
+	unsigned long long	addr;
+	char				*digits;
+	int					res;
 
-	addr = (long long)va_arg(*ap, void *);
-	digits = ft_lltoa_base(addr, HEX);
-	if (args->has_precision == 1 && digits[0] == '0')
-	{
-		free(digits);
-		digits = "";
-	}
 	res = 0;
-	if (args->precision < (int)ft_strlen(digits))
-		args->precision = (int)ft_strlen(digits);
-	if (args->width < args->precision + 2)
-		args->width = args->precision + 2;
+	addr = (unsigned long long)va_arg(*ap, void *);
+	digits = ft_ulltoa_base(addr, HEX);
+	if (!digits)
+		return (res);
+	if (args->has_precision == 1 && digits[0] == '0')
+		digits = free_and_dup_nul(digits);
+	args->precision = cmp(args->precision, (int)ft_strlen(digits));
+	args->width = cmp(args->width, args->precision + 2);
 	if (args->flags == '0')
 		res += ft_put_padding(args->width - args->precision - 2, '0');
 	if (args->flags == '\0')
@@ -88,20 +85,16 @@ int	ft_put_di(va_list *ap, t_args *args)
 	int		dsc;
 	int		res;
 
-	digits = ft_itoa(va_arg(*ap, int));
+	res = 0;
+	if (!(digits = ft_itoa(va_arg(*ap, int))))
+		return (res);
 	if (args->has_precision == 1 && digits[0] == '0')
-	{
-		free(digits);
-		digits = "";
-	}
+		digits = free_and_dup_nul(digits);
 	if (digits[0] == '-')
 		args->precision++;
-	res = 0;
-	if (args->precision < (int)ft_strlen(digits))
-		args->precision = (int)ft_strlen(digits);
-	if (args->width < args->precision)
-		args->width = args->precision;
-	dsc = (args->has_precision == 1) && (args->flags == '0');
+	args->precision = cmp(args->precision, (int)ft_strlen(digits));
+	args->width = cmp(args->width, args->precision);
+	dsc = ((args->has_precision == 1) && (args->flags == '0'));
 	if (args->flags == '\0' || dsc)
 		res += ft_put_padding(args->width - args->precision, ' ');
 	if (digits[0] == '-')

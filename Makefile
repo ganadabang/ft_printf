@@ -10,6 +10,7 @@ SRCS = ft_printf.c\
 		read_utils_2.c\
 		put_utils_1.c\
 		put_utils_2.c\
+		put_utils_3.c\
 		utils/ft_atoi.c\
 		utils/ft_calloc.c\
 		utils/ft_isdigit.c\
@@ -20,8 +21,10 @@ SRCS = ft_printf.c\
 		utils/ft_putstr.c\
 		utils/ft_strchr.c\
 		utils/ft_strlen.c\
-		utils/ft_utoa_base.c\
-		utils/ft_lltoa_base.c
+		utils/ft_uitoa_base.c\
+		utils/ft_ulltoa_base.c\
+		utils/ft_strdup.c\
+		utils/ft_memcpy.c\
 
 OBJS = $(SRCS:.c=.o)
 

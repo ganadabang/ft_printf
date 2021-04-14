@@ -1,36 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   read_utils_2.c                                     :+:      :+:    :+:   */
+/*   put_utils_3.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/09 16:04:04 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/13 17:39:50 by hyeonsok         ###   ########.fr       */
+/*   Created: 2021/04/13 17:32:21 by hyeonsok          #+#    #+#             */
+/*   Updated: 2021/04/14 15:27:23 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libftprintf.h"
 
-int	ft_isflag(int c)
+char	*free_and_dup_nul(char *digits)
 {
-	return ((c == '0') || (c == '-'));
+	free(digits);
+	return (ft_strdup(""));
 }
 
-int	ft_getdigits(char *str)
+int		cmp(int num1, int num2)
 {
-	char	*idx;
-
-	idx = str;
-	if (*idx == '+' || *idx == '-')
-		idx++;
-	while (ft_isdigit(*idx))
-		idx++;
-	return (idx - str);
+	if (num1 < num2)
+		return (num2);
+	return (num1);
 }
 
-int	ft_isformat(int c)
+int		ft_isminus(int c)
 {
-	return (ft_strchr(CONV, c) || ft_isspace(c) || ft_isflag(c) || \
-	ft_isdigit(c) || (c == '.') || (c == '*'));
+	if (c == '-')
+		return (1);
+	return (0);
 }

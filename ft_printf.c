@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/02 23:14:15 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/11 18:54:40 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/14 15:23:55 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	readargs(char *str, t_args *args)
 	char	*idx;
 
 	idx = str;
+	idx++;
 	initialize_args(args);
 	while (*idx != '\0' && ft_isformat(*idx))
 	{
@@ -37,7 +38,7 @@ int	readargs(char *str, t_args *args)
 
 int	ft_put_conv(va_list *ap, t_args *args)
 {
-	control_args(ap, args);
+	validate_args(ap, args);
 	if (args->type == 'c')
 		return (ft_put_c(ap, args));
 	if (args->type == 's')
@@ -65,20 +66,19 @@ int	ft_printf(const char *str, ...)
 	t_args	args;
 
 	itr = (char *)str;
-	if (!itr)
-		return (0);
 	va_start(ap, str);
-	res = 0;
-	while (*itr)
 	{
-		if (*itr == '%')
+		res = 0;
+		while (*itr)
 		{
-			itr++;
-			itr += readargs(itr, &args);
-			res += ft_put_conv(&ap, &args);
-			continue ;
+			if (*itr == '%')
+			{
+				itr += readargs(itr, &args);
+				res += ft_put_conv(&ap, &args);
+				continue ;
+			}
+			res += ft_putchar(*itr++);
 		}
-		res += ft_putchar(*itr++);
 	}
 	va_end(ap);
 	return (res);
