@@ -6,7 +6,7 @@
 /*   By: hyeonsok <hyeonsok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 16:12:16 by hyeonsok          #+#    #+#             */
-/*   Updated: 2021/04/14 15:14:05 by hyeonsok         ###   ########.fr       */
+/*   Updated: 2021/04/16 16:40:38 by hyeonsok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,11 @@ int	ft_put_p(va_list *ap, t_args *args)
 		digits = free_and_dup_nul(digits);
 	args->precision = cmp(args->precision, (int)ft_strlen(digits));
 	args->width = cmp(args->width, args->precision + 2);
-	if (args->flags == '0')
-		res += ft_put_padding(args->width - args->precision - 2, '0');
 	if (args->flags == '\0')
 		res += ft_put_padding(args->width - args->precision - 2, ' ');
 	res += ft_putstr("0x");
+	if (args->flags == '0')
+		res += ft_put_padding(args->width - args->precison - 2, '0');
 	args->precision -= ft_put_padding(args->precision - ft_strlen(digits), '0');
 	res += ft_putstr(digits);
 	res += ft_put_padding(args->width - res, ' ');
